@@ -1,6 +1,7 @@
 
 const express = require('express'),
-    bodyParser = require('body-parser');
+    bodyParser = require('body-parser'),
+	check = require('./checker.js');
 
 const app = express();
 app.use(bodyParser.json());
@@ -12,6 +13,13 @@ app.set('port', (process.env.PORT || 5000));
 app.get('/count',function (req, res) {
     res.json({count: 5})
 })
+
+app.post('/check',(req,res) => {
+	check(req.body.url,req.body.invocationParameters,req.body.expectedResultData,req.body.expectedResultStatus)
+		.then(result => {
+			res.status(200).json(result);
+		});
+});
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
